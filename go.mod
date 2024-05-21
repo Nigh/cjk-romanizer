@@ -1,4 +1,4 @@
-module github.com/Nigh/cjk-rename
+module github.com/Nigh/cjk-romanizer
 
 go 1.22.1
 
