@@ -1,6 +1,6 @@
 VERSION		= 0.1.0
 DIR 		= ./build
-EXECUTABLE  	= cjk-romanizer
+EXECUTABLE 	= cjk-romanizer
 GOARCH		= amd64
 GOOSWIN		= windows
 GOOSX		= darwin
@@ -12,7 +12,7 @@ WINBIN 		= $(DIR)/$(EXECUTABLE)-win-$(GOARCH).exe
 OSXBIN 		= $(DIR)/$(EXECUTABLE)-darwin-$(GOARCH)
 LINUXBIN 	= $(DIR)/$(EXECUTABLE)-linux-$(GOARCH)
 
-CC 		= go build
+CC 			= go build
 CFLAGS		= 
 LDFLAGS		= all=-w -s -X main.version=$(VERSION)
 GCFLAGS 	= all=

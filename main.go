@@ -1,7 +1,6 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"math"
 	"os"
@@ -10,11 +9,11 @@ import (
 	"strings"
 
 	"github.com/Nigh/transliterate/pkg/transliterate"
+	"github.com/integrii/flaggy"
 	"github.com/logrusorgru/aurora/v4"
 )
 
 var (
-	help        bool
 	inputPath   string
 	isDry       bool
 	skipComfirm bool
@@ -56,21 +55,27 @@ var colorize *aurora.Aurora
 var version string
 
 func init() {
-	flag.BoolVar(&help, "help", false, "help")
-	flag.BoolVar(&isDry, "dry", false, "run without actually rename files")
-	flag.BoolVar(&skipComfirm, "y", false, "skip comfirm")
-	flag.BoolVar(&isSilent, "s", false, "silence output")
-
-	flag.StringVar(&separator, "sp", "-", "separator between characters")
-	flag.StringVar(&inputPath, "in", "", "input path")
-
-	flag.Parse()
+	separator = "-"
+	flaggy.SetName("cjk-romanizer")
+	flaggy.SetDescription("Rename CJK characters to roman characters")
+	flaggy.DefaultParser.ShowHelpOnUnexpected = true
+	flaggy.DefaultParser.AdditionalHelpPrepend = "https://github.com/Nigh/cjk-romanizer"
+	flaggy.AddPositionalValue(&inputPath, "path", 1, true, "the path to start rename")
+	flaggy.Bool(&isDry, "d", "dry", "run without actually rename files")
+	flaggy.Bool(&skipComfirm, "y", "comfirm", "skip comfirm")
+	flaggy.Bool(&isSilent, "s", "silent", "silence output")
+	flaggy.String(&separator, "sp", "separator", "separator between characters")
+	flaggy.SetVersion(version)
+	flaggy.Parse()
 }
 
-func askForAnswer() string {
-	var ans string
+func askForAnswer() (ans string) {
 	fmt.Scanln(&ans)
-	return strings.ToLower(ans)
+	ans = strings.ToLower(ans)
+	if len(ans) == 0 {
+		ans = " "
+	}
+	return
 }
 func askForContinue() bool {
 	var yes string
@@ -79,14 +84,6 @@ func askForContinue() bool {
 }
 
 func main() {
-	if help || len(inputPath) == 0 {
-		flag.Usage()
-		return
-	}
-	if len(inputPath) == 0 {
-		flag.Usage()
-		return
-	}
 	file2Rename = make(FilePaths, 0)
 	trans = transliterate.Sugar(separator, "")
 	colorize = aurora.New()
@@ -158,7 +155,9 @@ func main() {
 
 func walker(realPath string, f os.FileInfo, err error) error {
 	ext := filepath.Ext(f.Name())
-
+	if len(f.Name()) == 0 {
+		return nil
+	}
 	if f.Name()[0] == '.' {
 		return filepath.SkipDir
 	}
