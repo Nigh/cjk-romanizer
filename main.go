@@ -53,6 +53,7 @@ func (a FilePaths) Less(i, j int) bool {
 
 var file2Rename FilePaths
 var colorize *aurora.Aurora
+var version string
 
 func init() {
 	flag.BoolVar(&help, "help", false, "help")
