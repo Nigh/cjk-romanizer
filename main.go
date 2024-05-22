@@ -50,9 +50,9 @@ func (a FilePaths) Less(i, j int) bool {
 var file2Rename FilePaths
 
 func init() {
-	flag.BoolVar(&help, "help", false, "帮助")
-	flag.BoolVar(&isDry, "dry", false, "仅查看重命名结果，而不改变文件名")
-	flag.StringVar(&inputPath, "in", "", "需要重命名的路径")
+	flag.BoolVar(&help, "help", false, "help")
+	flag.BoolVar(&isDry, "dry", false, "run without actually rename files")
+	flag.StringVar(&inputPath, "in", "", "input path")
 
 	file2Rename = make(FilePaths, 0)
 	trans = transliterate.Sugar("-", "")
