@@ -2,6 +2,8 @@
 
 A romanizer for cjk character.
 
+![](assets/usage.gif)
+
 ## usage
 
 Example:
