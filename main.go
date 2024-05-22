@@ -65,14 +65,6 @@ func init() {
 	flag.StringVar(&inputPath, "in", "", "input path")
 
 	flag.Parse()
-	if help || len(inputPath) == 0 {
-		flag.Usage()
-		return
-	}
-	if len(inputPath) == 0 {
-		flag.Usage()
-		return
-	}
 }
 
 func askForAnswer() string {
@@ -87,6 +79,14 @@ func askForContinue() bool {
 }
 
 func main() {
+	if help || len(inputPath) == 0 {
+		flag.Usage()
+		return
+	}
+	if len(inputPath) == 0 {
+		flag.Usage()
+		return
+	}
 	file2Rename = make(FilePaths, 0)
 	trans = transliterate.Sugar(separator, "")
 	colorize = aurora.New()
