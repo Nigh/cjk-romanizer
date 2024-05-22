@@ -90,7 +90,8 @@ func main() {
 	file2Rename = make(FilePaths, 0)
 	trans = transliterate.Sugar(separator, "")
 	colorize = aurora.New()
-	inputPath = filepath.Clean(inputPath)
+
+	inputPath, _ = filepath.Abs(inputPath)
 	_, err := os.Stat(inputPath)
 	if err != nil {
 		fmt.Println(err)
