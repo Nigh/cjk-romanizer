@@ -1,19 +1,28 @@
-# cjk romanizer [WIP]
+# cjk romanizer
 
 A romanizer for cjk character.
 
+![](assets/usage.gif)
 
-**This project is currently Work In Progress!!!**
+## usage
 
 Example:
+```shell
+cjk-romanizer ~/download/test --dry -sp "_"
 ```
-[D] 测试테스트test試験 ---> Ce-Shi-te-seu-teu-test-Shi-Yan
-        [F] This하드웨어はかなり功能强大 ---> This-ha-deu-we-eo-ha-ka-na-ri-Gong-Neng-Qiang-Da.png
-[D] 「このソフト」 ---> [-ko-no-so-hu-to-]
-        [F] 测试 ---> Ce-Shi.png
-        [F] このソフトはかなり強力だ ---> ko-no-so-hu-to-ha-ka-na-ri-Qiang-Li-da.jpg
-        [F] 这个ソフトはかなりpowerful ---> Zhe-Ge-so-hu-to-ha-ka-na-ri-powerful.jpg
-[D] 这个하드웨어空 格Space ---> Zhe-Ge-ha-deu-we-eo-Kong Ge-Space
-        [F] test ---> test.png
-        [F] 하드웨어 ---> ha-deu-we-eo.jpg
+
+Help:
+```shell
+Usage:
+	cjk-romanizer [path]
+
+Positional Variables:
+	path   the path to start rename (Required)
+Flags:
+	   --version     Displays the program version string.
+	-h --help        Displays help with available flag, subcommand, 	and positional value parameters.
+	-d --dry         run without actually rename files
+	-y --comfirm     skip comfirm
+	-s --silent      silence output
+	-sp --separator   separator between characters (default: -)
 ```
