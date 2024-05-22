@@ -1,4 +1,4 @@
-VERSION		= 0.1.0
+VERSION		= 1.0.0
 DIR 		= ./build
 EXECUTABLE 	= cjk-romanizer
 GOARCH		= amd64
