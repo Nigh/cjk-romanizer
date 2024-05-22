@@ -102,7 +102,7 @@ func main() {
 	if !isSilent {
 		fmt.Print("There are total ", colorize.Green(len(file2Rename)), " files to rename\n\n")
 		if !skipComfirm {
-			fmt.Println(colorize.Cyan("Confirm to rename? [y/n]"))
+			fmt.Println(colorize.Cyan("Confirm to rename? [Yes/No]"))
 			if !askForContinue() {
 				return
 			}
@@ -143,7 +143,7 @@ func main() {
 			if err != nil {
 				fmt.Println(err)
 				if !ignoreError {
-					fmt.Println(colorize.Red("Continue with error? [Y/N/All]"))
+					fmt.Println(colorize.Red("Continue with error? [Yes/No/All]"))
 					switch askForAnswer()[0] {
 					case 'a':
 						ignoreError = true
