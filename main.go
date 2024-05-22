@@ -127,14 +127,14 @@ func main() {
 				err = os.Rename(old, new)
 			}
 			if !isSilent {
-				var result string
+				var result aurora.Value
 				if isDry {
-					result = "↩️"
+					result = colorize.Yellow("DRY")
 				} else {
 					if err == nil {
-						result = "✅"
+						result = colorize.Green("✅")
 					} else {
-						result = "❌"
+						result = colorize.Red("❌")
 					}
 				}
 				fmt.Printf(fmtStr, result, i+1, colorize.BgWhite(fType).Black(), strings.TrimSuffix(string(v.path), string(filepath.Separator))+string(filepath.Separator), colorize.Yellow(v.oldName).Faint(), colorize.Green(v.newName).Bold())
