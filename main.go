@@ -158,6 +158,10 @@ func main() {
 
 func walker(realPath string, f os.FileInfo, err error) error {
 	ext := filepath.Ext(f.Name())
+
+	if f.Name()[0] == '.' {
+		return filepath.SkipDir
+	}
 	oldName := strings.TrimSuffix(f.Name(), filepath.Ext(f.Name()))
 	newName := trans(oldName)
 
