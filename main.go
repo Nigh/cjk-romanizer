@@ -1,7 +1,6 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"math"
 	"os"
@@ -10,11 +9,11 @@ import (
 	"strings"
 
 	"github.com/Nigh/transliterate/pkg/transliterate"
+	"github.com/integrii/flaggy"
 	"github.com/logrusorgru/aurora/v4"
 )
 
 var (
-	help        bool
 	inputPath   string
 	isDry       bool
 	skipComfirm bool
@@ -53,31 +52,30 @@ func (a FilePaths) Less(i, j int) bool {
 
 var file2Rename FilePaths
 var colorize *aurora.Aurora
+var version string
 
 func init() {
-	flag.BoolVar(&help, "help", false, "help")
-	flag.BoolVar(&isDry, "dry", false, "run without actually rename files")
-	flag.BoolVar(&skipComfirm, "y", false, "skip comfirm")
-	flag.BoolVar(&isSilent, "s", false, "silence output")
-
-	flag.StringVar(&separator, "sp", "-", "separator between characters")
-	flag.StringVar(&inputPath, "in", "", "input path")
-
-	flag.Parse()
-	if help || len(inputPath) == 0 {
-		flag.Usage()
-		return
-	}
-	if len(inputPath) == 0 {
-		flag.Usage()
-		return
-	}
+	separator = "-"
+	flaggy.SetName("cjk-romanizer")
+	flaggy.SetDescription("Rename CJK characters to roman characters")
+	flaggy.DefaultParser.ShowHelpOnUnexpected = true
+	flaggy.DefaultParser.AdditionalHelpPrepend = "https://github.com/Nigh/cjk-romanizer"
+	flaggy.AddPositionalValue(&inputPath, "path", 1, true, "the path to start rename")
+	flaggy.Bool(&isDry, "d", "dry", "run without actually rename files")
+	flaggy.Bool(&skipComfirm, "y", "comfirm", "skip comfirm")
+	flaggy.Bool(&isSilent, "s", "silent", "silence output")
+	flaggy.String(&separator, "sp", "separator", "separator between characters")
+	flaggy.SetVersion(version)
+	flaggy.Parse()
 }
 
-func askForAnswer() string {
-	var ans string
+func askForAnswer() (ans string) {
 	fmt.Scanln(&ans)
-	return strings.ToLower(ans)
+	ans = strings.ToLower(ans)
+	if len(ans) == 0 {
+		ans = " "
+	}
+	return
 }
 func askForContinue() bool {
 	var yes string
@@ -89,7 +87,8 @@ func main() {
 	file2Rename = make(FilePaths, 0)
 	trans = transliterate.Sugar(separator, "")
 	colorize = aurora.New()
-	inputPath = filepath.Clean(inputPath)
+
+	inputPath, _ = filepath.Abs(inputPath)
 	_, err := os.Stat(inputPath)
 	if err != nil {
 		fmt.Println(err)
@@ -100,7 +99,7 @@ func main() {
 	if !isSilent {
 		fmt.Print("There are total ", colorize.Green(len(file2Rename)), " files to rename\n\n")
 		if !skipComfirm {
-			fmt.Println(colorize.Cyan("Confirm to rename? [y/n]"))
+			fmt.Println(colorize.Cyan("Confirm to rename? [Yes/No]"))
 			if !askForContinue() {
 				return
 			}
@@ -125,14 +124,14 @@ func main() {
 				err = os.Rename(old, new)
 			}
 			if !isSilent {
-				var result string
+				var result aurora.Value
 				if isDry {
-					result = "↩️"
+					result = colorize.Yellow("DRY")
 				} else {
 					if err == nil {
-						result = "✅"
+						result = colorize.Green("✅")
 					} else {
-						result = "❌"
+						result = colorize.Red("❌")
 					}
 				}
 				fmt.Printf(fmtStr, result, i+1, colorize.BgWhite(fType).Black(), strings.TrimSuffix(string(v.path), string(filepath.Separator))+string(filepath.Separator), colorize.Yellow(v.oldName).Faint(), colorize.Green(v.newName).Bold())
@@ -141,7 +140,7 @@ func main() {
 			if err != nil {
 				fmt.Println(err)
 				if !ignoreError {
-					fmt.Println(colorize.Red("Continue with error? [Y/N/All]"))
+					fmt.Println(colorize.Red("Continue with error? [Yes/No/All]"))
 					switch askForAnswer()[0] {
 					case 'a':
 						ignoreError = true
@@ -156,6 +155,12 @@ func main() {
 
 func walker(realPath string, f os.FileInfo, err error) error {
 	ext := filepath.Ext(f.Name())
+	if len(f.Name()) == 0 {
+		return nil
+	}
+	if f.Name()[0] == '.' {
+		return filepath.SkipDir
+	}
 	oldName := strings.TrimSuffix(f.Name(), filepath.Ext(f.Name()))
 	newName := trans(oldName)
 
