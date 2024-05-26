@@ -19,6 +19,7 @@ var (
 	skipComfirm bool
 	isSilent    bool
 	separator   string
+	debug       bool
 )
 var trans func(string) string
 
@@ -65,6 +66,7 @@ func init() {
 	flaggy.Bool(&skipComfirm, "y", "comfirm", "skip comfirm")
 	flaggy.Bool(&isSilent, "s", "silent", "silence output")
 	flaggy.String(&separator, "sp", "separator", "separator between characters")
+	flaggy.Bool(&debug, "dbg", "debug", "debug mode")
 	flaggy.SetVersion(version)
 	flaggy.Parse()
 }
@@ -88,7 +90,13 @@ func main() {
 	trans = transliterate.Sugar(separator, "")
 	colorize = aurora.New()
 
+	if !isSilent || debug {
+		fmt.Println("inputPath:", inputPath)
+	}
 	inputPath, _ = filepath.Abs(inputPath)
+	if !isSilent || debug {
+		fmt.Println("ABS inputPath:", inputPath)
+	}
 	_, err := os.Stat(inputPath)
 	if err != nil {
 		fmt.Println(err)
@@ -96,7 +104,7 @@ func main() {
 	}
 
 	filepath.Walk(inputPath, walker)
-	if !isSilent {
+	if !isSilent || debug {
 		fmt.Print("There are total ", colorize.Green(len(file2Rename)), " files to rename\n\n")
 		if !skipComfirm {
 			fmt.Println(colorize.Cyan("Confirm to rename? [Yes/No]"))
@@ -174,6 +182,10 @@ func walker(realPath string, f os.FileInfo, err error) error {
 		} else {
 			if oldName != newName {
 				fmt.Printf("\t[F] %s\n\t--> %s\n", colorize.BrightBlue(oldName+ext), colorize.BrightCyan(newName+ext))
+			} else {
+				if debug {
+					fmt.Printf("\t[F] %s (skip)\n", colorize.BrightBlue(oldName+ext))
+				}
 			}
 		}
 	}
