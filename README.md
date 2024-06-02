@@ -1,6 +1,10 @@
+<div align="center">
+<img src="https://socialify.git.ci/Nigh/cjk-romanizer/image?description=1&font=KoHo&logo=https%3A%2F%2Fraw.githubusercontent.com%2FNigh%2Fcjk-romanizer%2Fmain%2Fassets%2Flogo.png&name=1&owner=1&pattern=Floating%20Cogs&stargazers=1&theme=Auto" alt="cjk-romanizer" width="640" height="320" />
+</div>
+
+
 # cjk romanizer
 
-A romanizer for cjk character.
 
 ![](assets/usage.gif)
 
